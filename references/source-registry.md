@@ -4,7 +4,7 @@
 
 ## 公共规则与模板
 
-- `00-通用公式与技巧.txt` → `01-core-guidelines.md`：九要素、关键词、连招和一致性入门规则。
+- `00-通用公式与技巧实例.txt` → `01-core-guidelines.md`：九要素、关键词、连招和一致性入门规则；由原 `00-通用公式与技巧.txt` 更名，内容未变。
 - `高燃打斗.md` → `01-core-guidelines.md`：空间锚点、观察轴、物理闭环和镜头契约。
 - `高频打斗提示词模板（稳定版）(1).txt` → `02-template-stable.md`：事实卡、四阶段连续和质检。
 - `高频打斗提示词模板（疯癫版）(1).txt` → `02-template-impact-anime.md`：资产绑定、短时高密度、特效和声音。
@@ -28,6 +28,7 @@
 - `14-空战.txt` → `03-topic-vehicles-war.md`
 - `15-古罗马角斗.txt` → `03-topic-western-history.md`
 - `16-特摄怪兽.txt` → `03-topic-creatures-tokusatsu.md`
+- `玄幻快速拼招+大招首尾模板.txt` → `03-topic-eastern-fantasy.md`：新增宏观远距仙侠对轰、分段首尾状态契约、特效状态连续性和碰撞顺序；提炼规则，不复制原始长提示词。
 
 ## 增量登记格式
 
