@@ -3,6 +3,6 @@
 
 ## 🚀 快速开始
 ### 方法1. 克隆仓库
-### git clone https://github.com/anbeime/skill.git
+### git clone https://github.com/qualsenWeb/fight-video-create-skill.git
 ## 方法2. 智能体安装
 ### 帮我安装这个skill：https://github.com/qualsenWeb/fight-video-create-skill
