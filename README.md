@@ -36,8 +36,8 @@ git clone https://github.com/qualsenWeb/fight-video-create-skill.git
 
 ```text
 调用 fight-video-create-skill：
-一个持长枪的男人与一个持长剑的女人在废墟中高速交锋，
-最后由女剑客借断墙反弹完成破招。制作 15 秒、16:9、电影感分镜。
+一个持长枪的男人与一个持长剑的女人在战斗。
+制作 15 秒、16:9、电影感分镜。
 ```
 
 Skill 会先确定场景与可用动作方案；命中多个方案时会列出推荐项并等待你确认，再生成可执行的设计。

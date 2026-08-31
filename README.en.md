@@ -36,8 +36,7 @@ Install this skill: https://github.com/qualsenWeb/fight-video-create-skill
 
 ```text
 Use fight-video-create-skill:
-A man with a spear and a woman with a sword clash at high speed in ruined buildings.
-The swordswoman uses a broken wall for a rebound and lands the counter at the end.
+A man with a spear and a woman with a sword fight in somewhere.
 Create a 15-second, 16:9, cinematic storyboard.
 ```
 
