@@ -17,6 +17,7 @@ KEYWORD_FIELDS = {
     "plot_signatures",
     "script_types",
     "technique_signatures",
+    "range_keywords",
 }
 
 
@@ -77,6 +78,23 @@ def validate_metadata(path: Path) -> list[str]:
         if not (directory / filename).is_file():
             errors.append(f"{path}: inventory 文件不存在: {filename}")
 
+    is_skill_library = meta.get("library_kind") == "skills"
+    if is_skill_library:
+        index_file = meta.get("index_file")
+        if not index_file or not (directory / str(index_file)).is_file():
+            errors.append(f"{path}: 技能库缺少有效 index_file")
+
+        move_metadata_path = directory.parent / "招式库" / "00-路由元.json"
+        move_data = load_json(move_metadata_path, errors)
+        if move_data is not None:
+            overlapping_files = sorted(
+                set(inventory) & set(move_data.get("inventory", []))
+            )
+            if overlapping_files:
+                errors.append(
+                    f"{path}: 技能库与招式库 inventory 重复: {overlapping_files}"
+                )
+
     for route in routes:
         filename = route.get("file", "<unknown>")
         keyword_count = sum(
@@ -88,6 +106,55 @@ def validate_metadata(path: Path) -> list[str]:
             errors.append(f"{path}: {filename} 没有可检索关键词")
         if not route.get("retrieval_hint"):
             errors.append(f"{path}: {filename} 缺少 retrieval_hint")
+
+        if not is_skill_library:
+            continue
+
+        range_keywords = route.get("range_keywords")
+        if not isinstance(range_keywords, list) or not range_keywords:
+            errors.append(f"{path}: {filename} 缺少 range_keywords")
+        elif set(range_keywords) - {"单体", "群体"}:
+            errors.append(
+                f"{path}: {filename} range_keywords 只能包含单体或群体"
+            )
+
+        disallowed_fields = sorted(
+            field
+            for field in KEYWORD_FIELDS - {"range_keywords"}
+            if route.get(field)
+        )
+        if disallowed_fields:
+            errors.append(
+                f"{path}: {filename} 技能库不得使用其他匹配字段: "
+                f"{disallowed_fields}"
+            )
+
+        required_skill_fields = {
+            "secondary_keywords": list,
+            "condition_prompt": str,
+            "condition_options": list,
+            "ability_signatures": list,
+            "move_library_exclusions": list,
+            "avoid_when": list,
+        }
+        for field, expected_type in required_skill_fields.items():
+            value = route.get(field)
+            if not isinstance(value, expected_type) or not value:
+                errors.append(
+                    f"{path}: {filename} 缺少非空 {field}"
+                )
+
+        skill_file = directory / str(filename)
+        if skill_file.is_file():
+            skill_content = skill_file.read_text(encoding="utf-8-sig")
+            required_sections = ("二级前置条件", "选中提醒", "招式库互斥")
+            missing_sections = [
+                section for section in required_sections if section not in skill_content
+            ]
+            if missing_sections:
+                errors.append(
+                    f"{path}: {filename} 缺少技能条件章节: {missing_sections}"
+                )
 
     return errors
 

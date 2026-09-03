@@ -21,6 +21,10 @@ SCOPE_PATHS = {
     / "action-storyboard-design"
     / "招式库"
     / "00-路由元.json",
+    "skills": REFERENCE_ROOT
+    / "action-storyboard-design"
+    / "技能库"
+    / "00-路由元.json",
     "scripts": REFERENCE_ROOT / "example-scripts" / "00-路由元.json",
 }
 FIELD_WEIGHTS = {
@@ -37,6 +41,9 @@ FIELD_WEIGHTS = {
         "title_keywords": 4,
         "route_keywords": 2,
         "technique_signatures": 1,
+    },
+    "skills": {
+        "range_keywords": 1,
     },
     "scripts": {
         "title_keywords": 4,
@@ -106,6 +113,15 @@ def score_route(scope: str, query: str, route: dict[str, Any]) -> dict[str, Any]
         "retrieval_hint": route.get("retrieval_hint", ""),
         "avoid_when": route.get("avoid_when", []),
     }
+    if scope == "skills":
+        result["selection_notice"] = {
+            "secondary_keywords": route.get("secondary_keywords", []),
+            "condition_prompt": route.get("condition_prompt", ""),
+            "condition_options": route.get("condition_options", []),
+            "move_library_exclusions": route.get(
+                "move_library_exclusions", []
+            ),
+        }
     return result
 
 
@@ -129,11 +145,16 @@ def route(scope: str, query: str) -> dict[str, Any]:
         }
         for item in metadata.get("routes", [])
     ]
+    match_rule = (
+        "仅按单体或群体范围召回候选；不自动指定主技能；二级条件不参与匹配"
+        if scope == "skills"
+        else "至少命中一个路由关键词；先按唯一命中数、再按字段权重排序"
+    )
     return {
         "scope": scope,
         "query": query,
-        "match_rule": "至少命中一个路由关键词；先按唯一命中数、再按字段权重排序",
-        "primary": eligible[0] if eligible else None,
+        "match_rule": match_rule,
+        "primary": None if scope == "skills" else (eligible[0] if eligible else None),
         "eligible": eligible,
         "available": available,
         "routing_rules": metadata.get("routing_rules", []),

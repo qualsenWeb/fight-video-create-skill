@@ -1,6 +1,6 @@
 ---
 name: fight-video-create-skill
-description: 将用户的打斗构想通过场景、动作分镜方案、招式库和示例剧本的多层关键词检索，编译为可靠的动作、剧情与分镜设计；也可将用户提供的一个或多个资料文件按用途吸收到 reference 资料库并维护路由元。用于打斗剧情构思、动作设计、招式设计、战斗分镜、视频战斗提示词、资料入库或扩充打斗资料库。
+description: 将用户的打斗构想通过场景、动作分镜方案、招式库、技能库和示例剧本的多层关键词检索，编译为可靠的动作、剧情与分镜设计；也可将用户提供的一个或多个资料文件按用途吸收到 reference 资料库并维护路由元。用于打斗剧情构思、动作设计、招式设计、条件型技能设计、战斗分镜、视频战斗提示词、资料入库或扩充打斗资料库。
 ---
 
 # 打斗视频创作与资料吸收
@@ -22,12 +22,13 @@ description: 将用户的打斗构想通过场景、动作分镜方案、招式�
 - 场景：`.cursor/skills/fight-video-create-skill/reference/scenes/00-路由元.json`
 - 动作/分镜方案：`.cursor/skills/fight-video-create-skill/reference/action-storyboard-design/00-路由元.json`
 - 招式：`.cursor/skills/fight-video-create-skill/reference/action-storyboard-design/招式库/00-路由元.json`
+- 技能：`.cursor/skills/fight-video-create-skill/reference/action-storyboard-design/技能库/00-路由元.json`
 - 示例剧本：`.cursor/skills/fight-video-create-skill/reference/example-scripts/00-路由元.json`
 
 执行确定性检索：
 
 ```bash
-python -X utf8 .cursor/skills/fight-video-create-skill/scripts/route_reference.py <scenes|design|moves|scripts> --query "用户原文与提炼关键词"
+python -X utf8 .cursor/skills/fight-video-create-skill/scripts/route_reference.py <scenes|design|moves|skills|scripts> --query "用户原文与提炼关键词"
 ```
 
 资料入库或路由变更后执行：
@@ -36,7 +37,7 @@ python -X utf8 .cursor/skills/fight-video-create-skill/scripts/route_reference.p
 python -X utf8 .cursor/skills/fight-video-create-skill/scripts/validate_routes.py
 ```
 
-检索结果中的 `eligible` 只包含至少命中一个关键词的候选；`available` 用于展示所有可手动选择的方案，不代表自动匹配成功。
+检索结果中的 `eligible` 只包含至少命中一个关键词的候选；`available` 用于展示所有可手动选择的方案，不代表自动匹配成功。技能库例外：只按“单体”或“群体”召回宽松候选，`primary` 固定为空；`selection_notice` 中的二级条件只用于选中后的提醒，不参与匹配或排序。
 
 ## 意图路由
 
@@ -101,6 +102,22 @@ python -X utf8 .cursor/skills/fight-video-create-skill/scripts/validate_routes.p
 5. 全部候选不合理时，按同等生物力学完整度原创招式。
 6. 路由或索引提及但磁盘不存在的专项文件只能报告缺失，不得伪造其内容。
 
+### 2B. 技能检索与特殊条件门禁
+
+仅当角色需要独立能力机制，且该机制不能由招式库中的具体武学、兵器技法、身体路径或连续招式表达时执行：
+
+1. **先招式、后技能**：先完成阶段 2A 的招式库检索与合理性判断；招式库已有或可通过吸收形成的内容不得改从技能库重复取用。
+2. 根据能力作用目标提炼且只提炼“单体”或“群体”，用该范围词检索 `skills`；不得把特殊法器、身体部位、介质、状态或发动动作加入技能匹配查询。
+3. 技能检索只做宽松候选召回，不采用 `primary`，也不得因路由编号靠前自动选中。向用户或当前智能体展示候选名称、能力定位和适用边界后再选择。
+4. 选中候选后，必须展示该项 `selection_notice` 中的：
+   - `secondary_keywords`：特殊法器、身体部位、介质、状态或控制接口；
+   - `condition_prompt`：发动前必须满足的条件；
+   - `condition_options`：可创造条件、可行替代和放弃选项；
+   - `move_library_exclusions`：与招式库的互斥边界。
+5. 若二级条件已经满足，才读取技能正文并应用；若未满足，让用户或智能体明确选择：创造合理条件 / 采用允许的替代条件 / 不采纳该技能。不得静默补设关键法器、身体结构、血契、介质或科技装备。
+6. 技能只补充“前置 → 发动 → 作用 → 终止”的能力机制。具体起势、身体路径、兵器接触、受力反馈和动作衔接仍从招式库获取或按同等完整度原创。
+7. 所有候选条件不兼容时放弃技能库，不为使用资料而修改用户锁定事实。
+
 ### 3. 剧情设计
 
 1. 用用户原文、创作卡和已确认动作方案检索 `scripts`。
@@ -133,6 +150,7 @@ python -X utf8 .cursor/skills/fight-video-create-skill/scripts/validate_routes.p
 - 场景、空间、环境调度 → `.cursor/skills/fight-video-create-skill/reference/scenes/`
 - 动作导演规则、分镜方案、镜头协议 → `.cursor/skills/fight-video-create-skill/reference/action-storyboard-design/`
 - 具体武学、兵器、招式、连招、身法 → `.cursor/skills/fight-video-create-skill/reference/action-storyboard-design/招式库/`
+- 无法转成招式、但具备独立前置、发动、作用与终止机制的能力 → `.cursor/skills/fight-video-create-skill/reference/action-storyboard-design/技能库/`
 - 完整剧情、案例脚本、成片拆解 → `.cursor/skills/fight-video-create-skill/reference/example-scripts/`
 
 一个文件有多个用途时，优先拆成职责单一的资料；无法无损拆分时询问用户。不得仅因主题相近就覆盖现有文件。
@@ -144,10 +162,12 @@ python -X utf8 .cursor/skills/fight-video-create-skill/scripts/validate_routes.p
 用户确认用途后：
 
 1. 先读取目标目录路由元、相近资料和必要索引。
-2. 将新信息分为：新增事实、已有重复、与现有规则冲突、低可信或不可执行内容。
-3. 重复内容不重复入库；新内容合并到职责最接近的文件，独立主题才新建文件。
-4. 保留来源说明和用户提供的关键语义；不要把推断伪装成原资料事实。
-5. 冲突时保留用户明确指示；未明确时并列记录适用条件，不静默覆盖。
+2. 若内容可能属于招式或技能，必须先按招式库入库条件判断：能转成具体武学、兵器技法、身体路径、接触结果或连续动作链的内容进入招式库；只有无法满足这些条件、但具备独立“前置 → 发动 → 作用 → 终止”机制的内容才进入技能库。
+3. 将新信息分为：新增事实、已有重复、与现有规则冲突、低可信或不可执行内容。
+4. 招式库与技能库互斥：招式库已有或可收录的机制不得在技能库重复建档；已存在技能后来能被完整转换为招式时，迁移到招式库并删除技能侧重复内容。
+5. 重复内容不重复入库；新内容合并到职责最接近的文件，独立主题才新建文件。
+6. 保留来源说明和用户提供的关键语义；不要把推断伪装成原资料事实。
+7. 冲突时保留用户明确指示；未明确时并列记录适用条件，不静默覆盖。
 
 ### 3. 更新路由元
 
@@ -156,9 +176,9 @@ python -X utf8 .cursor/skills/fight-video-create-skill/scripts/validate_routes.p
 - `meta.inventory_count`、`meta.last_verified`；
 - `routes`、`inventory`；
 - 自然、可检索且区分度高的关键词；
-- 场景的 `retrieval_hint`，动作方案的 `plot_signatures/avoid_when/conflict_resolution`，案例的 `script_types/scene_signatures`，招式的 `technique_signatures/avoid_when`。
+- 场景的 `retrieval_hint`，动作方案的 `plot_signatures/avoid_when/conflict_resolution`，案例的 `script_types/scene_signatures`，招式的 `technique_signatures/avoid_when`，技能的 `range_keywords/secondary_keywords/condition_prompt/condition_options/ability_signatures/move_library_exclusions/avoid_when`。
 
-关键词必须来自用户可能输入的自然表达。宽泛词不能单独造成误路由。新增目标至少有一个关键词，且文件必须真实存在。
+关键词必须来自用户可能输入的自然表达。宽泛词不能单独造成误路由。新增目标至少有一个关键词，且文件必须真实存在。技能库是唯一例外：`range_keywords` 只能是“单体”或“群体”，并允许宽松召回；`secondary_keywords` 及其他条件字段绝不参与检索。
 
 ### 4. 动作方案的特殊同步
 
@@ -170,7 +190,7 @@ python -X utf8 .cursor/skills/fight-video-create-skill/scripts/validate_routes.p
 4. 保持综合版“稳定连续、动作因果、空间路线、武学选招、镜头接力、特效声音、质量门禁”的职责结构；
 5. 若改动 frontmatter 中的内容定位，按项目规则递增 `version`。
 
-招式资料变更还要同步 `招式库/00-招式库索引.md`；若分类文件仍声明来自 `武打skill.md`，必须同步源文件或明确改写来源，禁止索引与实际来源失真。
+招式资料变更还要同步 `招式库/00-招式库索引.md`；技能资料变更还要同步 `技能库/00-技能库索引.md`，并重新检查与招式库的互斥关系。若分类文件仍声明来自 `武打skill.md`，必须同步源文件或明确改写来源，禁止索引与实际来源失真。
 
 ### 5. 验证与汇报
 
@@ -186,4 +206,6 @@ python -X utf8 .cursor/skills/fight-video-create-skill/scripts/validate_routes.p
 - 只列招式名，不写身体路径、接触、反馈与后续条件。
 - 把示例剧本仿写成换名字的复制品，或不告知用户使用了案例参考。
 - 入库后不更新路由元、库存数量、索引或综合版。
+- 将招式库已有或可收录的内容重复写入技能库，或跳过招式库优先判断。
+- 用特殊法器、身体部位、介质或状态等二级条件匹配技能；选中技能后不提示条件就直接采用。
 - 引用不存在的资料文件，或根据文件名伪造缺失内容。
