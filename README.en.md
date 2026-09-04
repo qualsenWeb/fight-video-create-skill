@@ -2,9 +2,11 @@
 
 [![中文](https://img.shields.io/badge/文档-中文-1677ff)](README.md) [![English](https://img.shields.io/badge/docs-English-64748b)](README.en.md) [![Changelog](https://img.shields.io/badge/changelog-更新日志-8b5cf6)](changelog.md)
 
-> Turn one rough fight idea into executable story beats, action chains, spatial routes, storyboards, and video-generation prompts.
+> Turn one rough fight idea into executable story beats, action chains, spatial routes, and action storyboards.
 
 Built for animated dramas, live-action fights, animation, wuxia, xianxia, and ability-driven combat. References provide structure, mechanisms, and quality standards; they never override the characters, weapons, abilities, outcome, duration, or ending you specify.
+
+This Skill is limited to fight design and action storyboarding. It does not produce prompts for any model or platform. Prompt wrappers, model/platform syntax, generation parameters, negative prompts, subtitle/audio directives, and ready-to-generate prompt text are prohibited from the reference library.
 
 ## Core capabilities
 
@@ -62,7 +64,7 @@ Skill routing → single-target/group candidates → prerequisite confirmation (
       ↓
 Sample-script routing → transfer mechanisms, not proprietary content
       ↓
-Story + action chain + spatial route + storyboard + generation constraints
+Story + action chain + spatial route + action storyboard + continuity constraints
 ```
 
 ### Operating principles
@@ -72,7 +74,8 @@ Story + action chain + spatial route + storyboard + generation constraints
 3. **One primary plan at a time** — Action/storyboard plans require confirmation before their protocols are used or combined.
 4. **Every move must be executable** — Key actions need a setup, body path, opponent response, contact or miss, force feedback, result, and next-state condition.
 5. **Moves take priority over skills** — Anything expressible as a martial, weapon, or body-action chain stays in the move library. A selected skill must satisfy its artifact, body-part, medium, or state prerequisites.
-6. **Transfer mechanisms only** — Reuse escalation, spatial phases, reversals, climax interfaces, and ending structure without copying proprietary characters, distinctive sentences, or unrelated plot.
+6. **Fight design and storyboards only** — Do not output model/platform prompts or ingest prompt wrappers, generation parameters, negative prompts, subtitle directives, or audio directives.
+7. **Transfer mechanisms only** — Reuse escalation, spatial phases, reversals, climax interfaces, and ending structure without copying proprietary characters, distinctive sentences, or unrelated plot.
 
 ## What the output contains
 
@@ -82,8 +85,8 @@ Unless you request another format, the default delivery includes:
 2. **Story design** — Objective, conflict, escalation, reversal, causal outcome, and ending;
 3. **Character action signatures** — Opening stance, range, movement, primary offense, counters, damage response, and finisher;
 4. **Action design** — Purpose → body path → opponent response → contact feedback → displacement result → next-action condition;
-5. **Spatial route and storyboard table** — Positions, viewing axis, camera handoff, camera endpoint, and sound;
-6. **Generation constraints** — Stable characters and weapons, no body fusion, no turn-based resets, no random axis jumps, and no effects hiding key contacts.
+5. **Spatial route and storyboard table** — Positions, viewing axis, camera handoff, camera endpoint, and environmental feedback;
+6. **Continuity constraints** — Stable character and weapon states, no body fusion, no turn-based resets, no random axis jumps, and no effects hiding key contacts.
 
 The draft must also enter effective action quickly, give important actions clear consequences, carry each segment's final state into the next, avoid queueing enemies in group fights, derive the ending from an earlier opening, and keep the subject, camera, or environmental aftermath moving in the final frame.
 
@@ -102,7 +105,7 @@ scripts/
 └── validate_routes.py                      # Routing metadata validator
 ```
 
-The skill library currently contains **10 conditional ability mechanisms**. It retrieves candidates only by single-target or group scope; secondary prerequisites never participate in matching. The sample-script library contains **28 cases**, covering sword fights, xianxia ranged qi exchanges, water-blade crowd clearing, multi-level architectural pursuit, formation-based suppression, cooperative combat, and large-scale ability finishers. The authoritative inventory and keywords are maintained in each directory's `00-路由元.json`.
+The reference library currently contains **27 scene entries, 24 action/storyboard plans, 32 move entries, 10 conditional skill mechanisms, and 28 sample-script cases**. Skills are retrieved only by single-target or group scope; secondary prerequisites never participate in matching. The authoritative inventory and keywords are maintained in each directory's `00-路由元.json`.
 
 ## Local use and validation
 
@@ -163,7 +166,8 @@ Contributions of scenes, directing plans, move references, conditional skills, a
 2. update the relevant `00-路由元.json`;
 3. use natural, discriminative search terms;
 4. run `validate_routes.py` and smoke-test one strong keyword per new route;
-5. preserve source notes and never present an inference as an original source fact.
+5. preserve source notes and never present an inference as an original source fact;
+6. strip prompt wrappers, model/platform syntax, generation parameters, negative prompts, subtitle/audio directives, and ready-to-generate prompt text; retain only platform-neutral fight knowledge.
 
 ## License
 
