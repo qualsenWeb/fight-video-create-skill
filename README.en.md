@@ -2,6 +2,10 @@
 
 [![中文](https://img.shields.io/badge/文档-中文-1677ff)](README.md) [![English](https://img.shields.io/badge/docs-English-64748b)](README.en.md) [![Changelog](https://img.shields.io/badge/changelog-更新日志-8b5cf6)](changelog.md)
 
+# important information
+
+I change my posting way to ([Billbill](https://space.bilibili.com/296119304))
+
 > Turn one rough fight idea into executable story beats, action chains, spatial routes, and action storyboards.
 
 Built for animated dramas, live-action fights, animation, wuxia, xianxia, and ability-driven combat. References provide structure, mechanisms, and quality standards; they never override the characters, weapons, abilities, outcome, duration, or ending you specify.
