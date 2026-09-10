@@ -2,6 +2,11 @@
 
 [![中文](https://img.shields.io/badge/文档-中文-1677ff)](README.md) [![English](https://img.shields.io/badge/docs-English-64748b)](README.en.md) [![Changelog](https://img.shields.io/badge/changelog-更新日志-8b5cf6)](changelog.md)
 
+## 重要通知
+
+因为梯子的原因，后续免费开源更新将放在[![我的B站](https://space.bilibili.com/296119304)]上。
+> V1版本的开源给了我很多灵感和思路，V2版本将会给大家带来更多的惊喜。
+
 > 把一句打斗构想，编译成可执行的剧情、动作链、空间路线和动作分镜。
 
 适用于漫剧、真人动作、动画、武侠、仙侠与能力战。参考资料只提供结构、机制和质量标准，不会覆盖你锁定的人物、武器、能力、胜负、时长或结尾。
